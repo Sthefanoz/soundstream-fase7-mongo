@@ -1,0 +1,9 @@
+{
+  "_comentario": "Copia este archivo a 'db_config.json' y coloca tus datos reales. db_config.json esta ignorado por git para no exponer credenciales.",
+
+  "_uri": "Cadena de conexion de MongoDB Atlas. La consigues en Atlas > Connect > Drivers. Reemplaza usuario, password y el host del cluster.",
+  "_name": "Nombre de la base de datos dentro del cluster.",
+
+  "URI": "mongodb+srv://USUARIO:PASSWORD@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+  "NAME": "soundstream"
+}

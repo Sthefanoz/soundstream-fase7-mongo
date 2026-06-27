@@ -1,0 +1,69 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Planes - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="orb one" data-parallax="0.3"></div>
+        <div class="section-title reveal">
+            <span class="eyebrow">Elige tu plan</span>
+            <h2>Sin contratos. Cancela cuando quieras.</h2>
+            <p style="color: var(--text-dim); margin-top: 12px;">Un mes gratis al elegir cualquier plan Premium.</p>
+        </div>
+
+        <div class="planes" data-stagger>
+            {% for p in planes %}
+            <div class="plan {% if p.destacado %}destacado{% endif %} reveal">
+                <h3>{{ p.nombre }}</h3>
+                <div class="precio">${{ p.precio }}<small>{{ p.periodo }}</small></div>
+                <ul>
+                    {% for f in p.features %}
+                    <li>{{ f }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% if usuario %}{% url 'web:contratar' p.codigo|lower %}{% else %}{% url 'usuarios:registro' %}{% endif %}" class="btn {% if p.destacado %}primary{% else %}ghost{% endif %}" style="width: 100%; justify-content: center;">
+                    {% if p.codigo == 'FREE' %}Empezar gratis{% else %}Elegir {{ p.nombre }}{% endif %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="parallax-band">
+    <div class="bg-text">PREMIUM</div>
+    <div class="container">
+        <div class="content reveal">
+            <h2>30 dias gratis<br>de Premium</h2>
+            <p style="color: var(--text-dim); margin-top: 1rem;">Sin anuncios, sin limites de saltos, descarga offline y FLAC en todas las plataformas.</p>
+            <a href="{% if usuario %}{% url 'web:contratar' 'premium' %}{% else %}{% url 'usuarios:registro' %}{% endif %}" class="btn primary lg" style="margin-top: 2rem;">Probar Premium</a>
+        </div>
+    </div>
+</section>
+
+<section class="block">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Tu suscripcion</span>
+            <h2>Gestiona pagos y regalias</h2>
+        </div>
+        {% if usuario %}
+        <div class="grid cols-2 reveal">
+            <a href="{% url 'operacion:historial' %}" class="card" style="padding: 30px;">
+                <div class="title">Historial y pagos</div>
+                <div class="sub" style="margin-top: 8px;">Mira tus reproducciones recientes y pagos aprobados.</div>
+            </a>
+            <a href="{% url 'operacion:regalias' %}" class="card" style="padding: 30px;">
+                <div class="title">Regalias por artista</div>
+                <div class="sub" style="margin-top: 8px;">Reporte de regalias acumuladas por artista.</div>
+            </a>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-dim);" class="reveal">
+            <a href="{% url 'web:login' %}" style="color: var(--accent);">Inicia sesion</a> para ver tu historial y gestionar tu plan.
+        </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

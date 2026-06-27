@@ -1,0 +1,27 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{% if playlist %}Editar playlist{% else %}Nueva playlist{% endif %} - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Tu coleccion</span>
+            <h2>{% if playlist %}Editar playlist{% else %}Crear playlist{% endif %}</h2>
+        </div>
+        <form method="post" class="form reveal">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="field">
+                <label>{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn primary lg" style="width: 100%; justify-content: center;">
+                {% if playlist %}Guardar cambios{% else %}Crear playlist{% endif %}
+            </button>
+            <a href="{% url 'usuarios:mis_playlists' %}" class="btn" style="width: 100%; justify-content: center; margin-top: 12px;">Cancelar</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

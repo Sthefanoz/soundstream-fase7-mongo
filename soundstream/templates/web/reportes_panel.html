@@ -1,0 +1,73 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Reportes - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Modulo de reportes</span>
+            <h2>Reportes y analitica</h2>
+            <p style="color: var(--text-dim); margin-top: 12px;">
+                Hola {{ usuario.primer_nombre }}, indicadores y reportes de la plataforma.
+            </p>
+        </div>
+
+        <!-- Resumen rapido -->
+        <div class="grid cols-3" data-stagger style="margin-bottom: 40px;">
+            <div class="card reveal" style="padding: 26px;">
+                <div class="title">Artistas</div>
+                <div class="num" style="font-size: 2.2rem; color: var(--accent);">{{ n_artistas }}</div>
+            </div>
+            <div class="card reveal" style="padding: 26px;">
+                <div class="title">Albumes</div>
+                <div class="num" style="font-size: 2.2rem; color: var(--accent);">{{ n_albumes }}</div>
+            </div>
+            <div class="card reveal" style="padding: 26px;">
+                <div class="title">Canciones</div>
+                <div class="num" style="font-size: 2.2rem; color: var(--accent);">{{ n_canciones }}</div>
+            </div>
+            <div class="card reveal" style="padding: 26px;">
+                <div class="title">Usuarios</div>
+                <div class="num" style="font-size: 2.2rem; color: var(--accent);">{{ n_usuarios }}</div>
+            </div>
+            <div class="card reveal" style="padding: 26px;">
+                <div class="title">Playlists</div>
+                <div class="num" style="font-size: 2.2rem; color: var(--accent);">{{ n_playlists }}</div>
+            </div>
+            <div class="card reveal" style="padding: 26px;">
+                <div class="title">Reproducciones</div>
+                <div class="num" style="font-size: 2.2rem; color: var(--accent);">{{ n_reproducciones }}</div>
+            </div>
+        </div>
+
+        <!-- Reportes disponibles -->
+        <div class="grid cols-3" data-stagger>
+            <a href="{% url 'reportes:top_canciones' %}" class="card reveal" style="padding: 28px;">
+                <div class="title">Top canciones</div>
+                <div class="sub">Las 25 canciones mas reproducidas.</div>
+            </a>
+            <a href="{% url 'reportes:top_artistas' %}" class="card reveal" style="padding: 28px;">
+                <div class="title">Top artistas</div>
+                <div class="sub">Artistas ordenados por reproducciones.</div>
+            </a>
+            <a href="{% url 'reportes:ingresos_plan' %}" class="card reveal" style="padding: 28px;">
+                <div class="title">Ingresos por plan</div>
+                <div class="sub">Pagos aprobados agrupados por plan.</div>
+            </a>
+            <a href="{% url 'reportes:regalias' %}" class="card reveal" style="padding: 28px;">
+                <div class="title">Regalias por artista</div>
+                <div class="sub">Monto acumulado de regalias.</div>
+            </a>
+            <a href="{% url 'reportes:repro_pais' %}" class="card reveal" style="padding: 28px;">
+                <div class="title">Reproducciones por pais</div>
+                <div class="sub">Distribucion geografica de las escuchas.</div>
+            </a>
+            <a href="{% url 'reportes:suscripciones' %}" class="card reveal" style="padding: 28px;">
+                <div class="title">Suscripciones</div>
+                <div class="sub">Resumen por plan y estado.</div>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

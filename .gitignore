@@ -1,0 +1,33 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Bytecode y artefactos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos locales de Django
+*.sqlite3
+staticfiles/
+media/
+
+# Variables de entorno locales (por si en el futuro se usa python-decouple)
+.env
+.env.local
+
+# Configuracion local de conexion a la BD (credenciales) - NO versionar.
+# Usar db_config.example.json como plantilla.
+db_config.json
+
+# Configuracion local de Claude / IDEs / SO
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

@@ -1,0 +1,65 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Historial - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Tu actividad</span>
+            <h2>Historial y pagos</h2>
+        </div>
+
+        {% if suscripcion %}
+        <div class="card reveal" style="padding: 24px; margin-bottom: 40px;">
+            <div class="title">Plan {{ suscripcion.tipo_plan }}
+                <span class="quality {% if suscripcion.activa %}flac{% endif %}" style="margin-left:8px;">{{ suscripcion.estado }}</span>
+            </div>
+            <div class="sub">Desde {{ suscripcion.fecha_inicio }}{% if suscripcion.fecha_fin %} hasta {{ suscripcion.fecha_fin }}{% endif %}</div>
+        </div>
+        {% endif %}
+
+        <div class="grid cols-2" style="align-items: start;">
+            <div class="reveal-left">
+                <h3 style="margin-bottom: 20px;">Reproducciones recientes</h3>
+                <div class="tracklist">
+                    {% for r in reproducciones %}
+                    <div class="track">
+                        <div class="idx">{{ forloop.counter|stringformat:"02d" }}</div>
+                        <div>
+                            <div class="t-title">{{ r.cancion.titulo }}</div>
+                            <div class="t-sub">{{ r.cancion.album.artista.nombre }} - {{ r.fecha|date:"d M H:i" }}</div>
+                        </div>
+                        <span></span>
+                        <span class="duration">{{ r.tiempo_escuchado }}</span>
+                        <span></span>
+                    </div>
+                    {% empty %}
+                    <div class="track"><div class="t-sub" style="padding: 12px;">Sin reproducciones todavia.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="reveal-right">
+                <h3 style="margin-bottom: 20px;">Pagos aprobados</h3>
+                <div class="tracklist">
+                    {% for p in pagos %}
+                    <div class="track">
+                        <div class="idx">#{{ p.id_pago }}</div>
+                        <div>
+                            <div class="t-title">${{ p.monto }} - {{ p.metodo_pago }}</div>
+                            <div class="t-sub">{{ p.fecha_pago|date:"d M Y H:i" }} - {{ p.suscripcion.tipo_plan }}</div>
+                        </div>
+                        <span class="quality flac">{{ p.resultado }}</span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    {% empty %}
+                    <div class="track"><div class="t-sub" style="padding: 12px;">Sin pagos registrados.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

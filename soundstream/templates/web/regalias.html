@@ -1,0 +1,33 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Regalias - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Reporte</span>
+            <h2>Regalias por artista</h2>
+            <p style="color: var(--text-dim); margin-top: 12px;">
+                Total acumulado: <strong>${{ total_global|floatformat:2 }}</strong>
+            </p>
+        </div>
+        <div class="tracklist reveal" data-stagger>
+            {% for a in resultados %}
+            <div class="track reveal">
+                <div class="idx">{{ forloop.counter|stringformat:"02d" }}</div>
+                <div>
+                    <div class="t-title">{{ a.nombre }}</div>
+                    <div class="t-sub">{{ a.num_regalias }} registros de regalia</div>
+                </div>
+                <span></span>
+                <span class="duration">${{ a.total_monto|floatformat:2 }}</span>
+                <span></span>
+            </div>
+            {% empty %}
+            <div class="track"><div class="t-sub" style="padding: 16px;">No hay regalias registradas.</div></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{{ album.titulo }} - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="grid cols-2" style="align-items: center; gap: 60px;">
+            <div class="reveal-left">
+                <div class="card" style="aspect-ratio: 1/1;">
+                    <div class="cover" style="height: 100%; font-size: 4rem;">
+                        {% if album.portada %}<img src="{{ album.portada }}" alt="{{ album.titulo }}">{% else %}💿{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="reveal-right">
+                <span style="color: var(--accent); letter-spacing: 0.3em; font-size: 0.8rem;">ALBUM - {{ album.anio }}</span>
+                <h1 style="font-size: clamp(2rem, 5vw, 4rem); margin: 1rem 0;">{{ album.titulo }}</h1>
+                <p style="color: var(--text-dim);">
+                    <a href="{% url 'catalogo:artista_detalle' album.artista.pk %}" style="color: var(--text);">{{ album.artista.nombre }}</a>
+                    {% if album.genero %} - {{ album.genero }}{% endif %}
+                    - {{ canciones.count }} canciones
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="block section-alt">
+    <div class="container">
+        <div class="tracklist reveal" data-stagger>
+            {% csrf_token %}
+            {% for c in canciones %}
+            <div class="track reveal">
+                <div class="idx">{{ forloop.counter|stringformat:"02d" }}</div>
+                <div>
+                    <div class="t-title">{{ c.titulo }}</div>
+                    <div class="t-sub">{{ c.num_reproducciones|default:0 }} reproducciones</div>
+                </div>
+                <span class="quality {% if c.es_flac %}flac{% endif %}">{{ c.calidad_audio }}</span>
+                <span class="duration">{{ c.duracion_mmss }}</span>
+                <button class="play-mini" data-play-song="{% url 'catalogo:reproducir' c.pk %}" data-preview="{{ c.preview }}" data-titulo="{{ c.titulo }}" data-artista="{{ album.artista.nombre }}" aria-label="Reproducir">▶</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

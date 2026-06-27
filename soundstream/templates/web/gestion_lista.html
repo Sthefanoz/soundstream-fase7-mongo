@@ -1,0 +1,98 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{{ titulo }} - Administracion{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Administracion</span>
+            <h2>{{ titulo }}</h2>
+        </div>
+
+        <div class="reveal" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+            <a href="{% url url_nuevo %}" class="btn primary">+ Nuevo {{ singular }}</a>
+            <a href="{% url 'catalogo:gestion_panel' %}" class="btn ghost">Volver al panel</a>
+        </div>
+
+        <form method="get" class="reveal" style="display:flex; gap:10px; margin-bottom:16px; max-width:560px;">
+            <input type="text" name="q" id="buscador" value="{{ q }}" autocomplete="off"
+                   placeholder="Buscar {{ titulo|lower }}..."
+                   style="flex:1; padding:12px; border-radius:10px; background:#15151f; color:#fff; border:1px solid var(--border);">
+            <button type="submit" class="btn primary">Buscar</button>
+        </form>
+
+        <p id="contador-busqueda" class="reveal" style="color:var(--text-dim); margin-bottom:16px; min-height:1.2em;">
+            {% if q %}{{ filas|length }} resultado(s) para "{{ q }}".{% endif %}
+        </p>
+
+        <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:0.92rem;">
+                <thead>
+                    <tr style="text-align:left; color:var(--text-dim); border-bottom:1px solid var(--border);">
+                        {% for col in columnas %}<th style="padding:12px 10px;">{{ col }}</th>{% endfor %}
+                        <th style="padding:12px 10px; text-align:right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                    {% for f in filas %}
+                    <tr class="fila" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                        {% for c in f.campos %}<td style="padding:12px 10px;">{{ c }}</td>{% endfor %}
+                        <td style="padding:12px 10px; text-align:right; white-space:nowrap;">
+                            <a href="{% url url_editar f.pk %}" class="btn" style="padding:6px 12px; font-size:0.82rem;">Editar</a>
+                            <form method="post" action="{% url url_eliminar f.pk %}" style="display:inline;"
+                                  data-confirm="¿Eliminar este {{ singular }}? Esta accion no se puede deshacer.">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="padding:6px 12px; font-size:0.82rem; color:#ff6b6b; border-color:#ff6b6b;">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="99" style="padding:30px; text-align:center; color:var(--text-dim);">Sin registros.</td></tr>
+                    {% endfor %}
+                    <tr id="sin-resultados-js" style="display:none;">
+                        <td colspan="99" style="padding:30px; text-align:center; color:var(--text-dim);">Sin coincidencias.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var input = document.getElementById('buscador');
+    if (!input) return;
+    var filas = Array.prototype.slice.call(document.querySelectorAll('#tabla-body tr.fila'));
+    var vacio = document.getElementById('sin-resultados-js');
+    var contador = document.getElementById('contador-busqueda');
+
+    function norm(s) {
+        return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    }
+
+    function filtrar() {
+        var texto = input.value.trim();
+        var q = norm(texto);
+        var visibles = 0;
+        filas.forEach(function (tr) {
+            var match = !q || norm(tr.textContent).indexOf(q) !== -1;
+            tr.style.display = match ? '' : 'none';
+            if (match) visibles++;
+        });
+        if (vacio) vacio.style.display = (filas.length && visibles === 0) ? '' : 'none';
+        if (contador) {
+            contador.textContent = texto ? visibles + ' resultado(s) para "' + texto + '".' : '';
+        }
+    }
+
+    input.addEventListener('input', filtrar);
+    // El filtrado es en vivo; evitamos recargar al presionar Enter.
+    var form = input.closest('form');
+    if (form) form.addEventListener('submit', function (e) { e.preventDefault(); filtrar(); });
+    filtrar();
+})();
+</script>
+{% endblock %}

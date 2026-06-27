@@ -1,0 +1,30 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{% if es_edicion %}Editar{% else %}Nuevo{% endif %} {{ titulo }} - Administracion{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Administracion</span>
+            <h2>{% if es_edicion %}Editar {{ titulo }}{% else %}Nuevo {{ titulo }}{% endif %}</h2>
+        </div>
+        <form method="post" class="form reveal">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="field">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <small style="color:#ff6b6b;">{{ field.errors|striptags }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn primary lg" style="width:100%; justify-content:center;">
+                {% if es_edicion %}Guardar cambios{% else %}Crear{% endif %}
+            </button>
+            <a href="{% url url_volver %}" class="btn" style="width:100%; justify-content:center; margin-top:12px;">Cancelar</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

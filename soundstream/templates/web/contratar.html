@@ -1,0 +1,120 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Contratar {{ info.nombre }} - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="orb one" data-parallax="0.4"></div>
+        <div class="section-title reveal">
+            <span class="eyebrow">Confirmar plan</span>
+            <h2>Plan {{ info.nombre }}</h2>
+            <p style="color: var(--text-dim); margin-top: 12px;">
+                {% if info.precio > 0 %}
+                    Total a pagar: <strong style="color: var(--accent); font-size: 1.4rem;">${{ info.precio }}</strong> / mes
+                {% else %}
+                    Plan gratuito, sin costo.
+                {% endif %}
+            </p>
+        </div>
+
+        <form method="post" class="form reveal" id="form-pago" novalidate>
+            {% csrf_token %}
+
+            {% if info.precio > 0 %}
+            <div class="field">
+                <label>{{ form.metodo_pago.label }}</label>
+                {{ form.metodo_pago }}
+            </div>
+
+            <div id="campos-tarjeta">
+                <div class="field">
+                    <label>{{ form.numero_tarjeta.label }}</label>
+                    {{ form.numero_tarjeta }}
+                    {% if form.numero_tarjeta.errors %}<small style="color:#ff6b6b;">{{ form.numero_tarjeta.errors|striptags }}</small>{% endif %}
+                    <small id="error-numero" style="color:#ff6b6b; display:none;"></small>
+                </div>
+                <div class="field" style="display:flex; gap:12px;">
+                    <div style="flex:1;">
+                        <label>{{ form.vence.label }}</label>
+                        {{ form.vence }}
+                        {% if form.vence.errors %}<small style="color:#ff6b6b;">{{ form.vence.errors|striptags }}</small>{% endif %}
+                    </div>
+                    <div style="flex:1;">
+                        <label>{{ form.cvv.label }}</label>
+                        {{ form.cvv }}
+                        {% if form.cvv.errors %}<small style="color:#ff6b6b;">{{ form.cvv.errors|striptags }}</small>{% endif %}
+                    </div>
+                </div>
+                <p style="color: var(--text-dim); font-size: 0.82rem; margin-bottom: 16px;">
+                    * Pago simulado: los datos de tarjeta solo se validan, no se almacenan.
+                    Puedes probar con una tarjeta de test como 4242 4242 4242 4242.
+                </p>
+            </div>
+
+            <button type="submit" class="btn primary lg" style="width:100%; justify-content:center;">Pagar ${{ info.precio }} y activar</button>
+            {% else %}
+            <button type="submit" class="btn primary lg" style="width:100%; justify-content:center;">Activar plan Free</button>
+            {% endif %}
+
+            <a href="{% url 'web:suscripciones' %}" class="btn" style="width:100%; justify-content:center; margin-top:12px;">Volver a los planes</a>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if info.precio > 0 %}
+<script>
+(function () {
+    const form = document.getElementById('form-pago');
+    const metodo = document.querySelector('[name=metodo_pago]');
+    const tarjeta = document.getElementById('campos-tarjeta');
+    const numero = document.querySelector('[name=numero_tarjeta]');
+    const vence = document.querySelector('[name=vence]');
+    const errNum = document.getElementById('error-numero');
+
+    // Mostrar/ocultar datos de tarjeta segun el metodo
+    function toggle() {
+        tarjeta.style.display = metodo.value === 'Paypal' ? 'none' : 'block';
+    }
+    metodo.addEventListener('change', toggle);
+    toggle();
+
+    // Formato visual: agrupa el numero en bloques de 4
+    numero.addEventListener('input', () => {
+        let v = numero.value.replace(/\D/g, '').slice(0, 16);
+        numero.value = v.replace(/(.{4})/g, '$1 ').trim();
+        errNum.style.display = 'none';
+    });
+    // Formato MM/AA
+    vence.addEventListener('input', () => {
+        let v = vence.value.replace(/\D/g, '').slice(0, 4);
+        vence.value = v.length > 2 ? v.slice(0, 2) + '/' + v.slice(2) : v;
+    });
+
+    // Validacion Luhn en el navegador (feedback inmediato; el servidor revalida)
+    function luhn(num) {
+        const d = num.replace(/\D/g, '');
+        if (d.length < 13 || d.length > 19) return false;
+        let sum = 0, even = false;
+        for (let i = d.length - 1; i >= 0; i--) {
+            let n = parseInt(d[i], 10);
+            if (even) { n *= 2; if (n > 9) n -= 9; }
+            sum += n; even = !even;
+        }
+        return sum % 10 === 0;
+    }
+    form.addEventListener('submit', (e) => {
+        if (metodo.value === 'Paypal') return;
+        if (!luhn(numero.value)) {
+            e.preventDefault();
+            errNum.textContent = 'El numero de tarjeta no es valido.';
+            errNum.style.display = 'block';
+            numero.focus();
+        }
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,232 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "ana",
+      "first_name": "Ana", "last_name": "Garcia",
+      "email": "ana@example.com",
+      "is_active": true,
+      "is_staff": false,
+      "password": "pbkdf2_sha256$600000$dummy$xKDdummyhashfortest=",
+      "date_joined": "2025-12-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "carlos",
+      "first_name": "Carlos", "last_name": "Mendoza",
+      "email": "carlos@example.com",
+      "is_active": true,
+      "is_staff": false,
+      "password": "pbkdf2_sha256$600000$dummy$xKDdummyhashfortest=",
+      "date_joined": "2025-11-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "lucia",
+      "first_name": "Lucia", "last_name": "Perez",
+      "email": "lucia@example.com",
+      "is_active": true,
+      "is_staff": false,
+      "password": "pbkdf2_sha256$600000$dummy$xKDdummyhashfortest=",
+      "date_joined": "2026-01-20T10:00:00Z"
+    }
+  },
+
+  {
+    "model": "usuarios.perfilusuario", "pk": 1,
+    "fields": {"usuario": 1, "plan_actual": "PREMIUM", "pais": "Mexico", "avatar": ""}
+  },
+  {
+    "model": "usuarios.perfilusuario", "pk": 2,
+    "fields": {"usuario": 2, "plan_actual": "FAMILIAR", "pais": "Colombia", "avatar": ""}
+  },
+  {
+    "model": "usuarios.perfilusuario", "pk": 3,
+    "fields": {"usuario": 3, "plan_actual": "FREE", "pais": "Argentina", "avatar": ""}
+  },
+
+  {
+    "model": "catalogo.artista", "pk": 1,
+    "fields": {
+      "nombre": "Aurora Vega",
+      "biografia": "Compositora mexicana de indie pop con tintes electronicos. Tres albumes publicados desde 2019.",
+      "pais": "Mexico", "fecha_inicio": "2019-03-15",
+      "foto": "", "monthly_listeners": 4280000
+    }
+  },
+  {
+    "model": "catalogo.artista", "pk": 2,
+    "fields": {
+      "nombre": "Lumen Collective",
+      "biografia": "Banda de rock alternativo formada en Buenos Aires, conocida por sus directos energicos.",
+      "pais": "Argentina", "fecha_inicio": "2016-08-01",
+      "foto": "", "monthly_listeners": 2150000
+    }
+  },
+  {
+    "model": "catalogo.artista", "pk": 3,
+    "fields": {
+      "nombre": "Diego Solar",
+      "biografia": "Productor y cantante de electronica latina, residente en Bogota.",
+      "pais": "Colombia", "fecha_inicio": "2020-01-10",
+      "foto": "", "monthly_listeners": 6800000
+    }
+  },
+  {
+    "model": "catalogo.artista", "pk": 4,
+    "fields": {
+      "nombre": "Marisol Kane",
+      "biografia": "Artista de jazz contemporaneo radicada en Madrid. Premio Goya 2024 a mejor cancion original.",
+      "pais": "Espana", "fecha_inicio": "2014-05-20",
+      "foto": "", "monthly_listeners": 1900000
+    }
+  },
+  {
+    "model": "catalogo.artista", "pk": 5,
+    "fields": {
+      "nombre": "Nicolas Vientre",
+      "biografia": "Cantautor uruguayo, conocido por sus letras introspectivas y guitarra acustica.",
+      "pais": "Uruguay", "fecha_inicio": "2018-09-12",
+      "foto": "", "monthly_listeners": 980000
+    }
+  },
+  {
+    "model": "catalogo.artista", "pk": 6,
+    "fields": {
+      "nombre": "ECO/SUR",
+      "biografia": "Duo electronico chileno con influencias andinas. Sus shows incluyen visuales generativos.",
+      "pais": "Chile", "fecha_inicio": "2021-04-04",
+      "foto": "", "monthly_listeners": 3200000
+    }
+  },
+
+  {
+    "model": "catalogo.album", "pk": 1,
+    "fields": {"artista": 1, "titulo": "Velocidad de la Luz", "anio": 2025, "genero": "Indie Pop", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 2,
+    "fields": {"artista": 1, "titulo": "Origenes", "anio": 2022, "genero": "Indie Pop", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 3,
+    "fields": {"artista": 2, "titulo": "Ruido Blanco", "anio": 2024, "genero": "Rock Alternativo", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 4,
+    "fields": {"artista": 3, "titulo": "Solar Nights", "anio": 2025, "genero": "Electronica", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 5,
+    "fields": {"artista": 3, "titulo": "Distancia", "anio": 2023, "genero": "Electronica", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 6,
+    "fields": {"artista": 4, "titulo": "Acuarela", "anio": 2024, "genero": "Jazz", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 7,
+    "fields": {"artista": 5, "titulo": "Cartas sin destinatario", "anio": 2023, "genero": "Folk", "portada": ""}
+  },
+  {
+    "model": "catalogo.album", "pk": 8,
+    "fields": {"artista": 6, "titulo": "Cordillera", "anio": 2025, "genero": "Electronica", "portada": ""}
+  },
+
+  {"model": "catalogo.cancion", "pk": 1, "fields": {"album": 1, "titulo": "Estrellas en mi puerta", "duracion_seg": 214, "calidad": "FLAC", "reproducciones": 1842300}},
+  {"model": "catalogo.cancion", "pk": 2, "fields": {"album": 1, "titulo": "Camino al sur", "duracion_seg": 198, "calidad": "320", "reproducciones": 920100}},
+  {"model": "catalogo.cancion", "pk": 3, "fields": {"album": 1, "titulo": "Velocidad", "duracion_seg": 232, "calidad": "FLAC", "reproducciones": 2410500}},
+  {"model": "catalogo.cancion", "pk": 4, "fields": {"album": 2, "titulo": "Origen", "duracion_seg": 245, "calidad": "320", "reproducciones": 660000}},
+  {"model": "catalogo.cancion", "pk": 5, "fields": {"album": 2, "titulo": "Brasa", "duracion_seg": 187, "calidad": "320", "reproducciones": 415000}},
+  {"model": "catalogo.cancion", "pk": 6, "fields": {"album": 3, "titulo": "Ruido Blanco", "duracion_seg": 222, "calidad": "FLAC", "reproducciones": 1380000}},
+  {"model": "catalogo.cancion", "pk": 7, "fields": {"album": 3, "titulo": "Cables al cielo", "duracion_seg": 268, "calidad": "320", "reproducciones": 820100}},
+  {"model": "catalogo.cancion", "pk": 8, "fields": {"album": 3, "titulo": "Asfalto", "duracion_seg": 195, "calidad": "320", "reproducciones": 610200}},
+  {"model": "catalogo.cancion", "pk": 9, "fields": {"album": 4, "titulo": "Solar Nights", "duracion_seg": 312, "calidad": "FLAC", "reproducciones": 3520400}},
+  {"model": "catalogo.cancion", "pk": 10, "fields": {"album": 4, "titulo": "Caribe Pulse", "duracion_seg": 278, "calidad": "FLAC", "reproducciones": 2810000}},
+  {"model": "catalogo.cancion", "pk": 11, "fields": {"album": 5, "titulo": "Distancia", "duracion_seg": 256, "calidad": "320", "reproducciones": 1240500}},
+  {"model": "catalogo.cancion", "pk": 12, "fields": {"album": 6, "titulo": "Acuarela", "duracion_seg": 308, "calidad": "FLAC", "reproducciones": 540100}},
+  {"model": "catalogo.cancion", "pk": 13, "fields": {"album": 6, "titulo": "Lluvia en La Latina", "duracion_seg": 287, "calidad": "FLAC", "reproducciones": 410800}},
+  {"model": "catalogo.cancion", "pk": 14, "fields": {"album": 7, "titulo": "Carta uno", "duracion_seg": 224, "calidad": "320", "reproducciones": 320200}},
+  {"model": "catalogo.cancion", "pk": 15, "fields": {"album": 7, "titulo": "Carta cinco", "duracion_seg": 198, "calidad": "320", "reproducciones": 280400}},
+  {"model": "catalogo.cancion", "pk": 16, "fields": {"album": 8, "titulo": "Quebrada", "duracion_seg": 342, "calidad": "FLAC", "reproducciones": 1750000}},
+  {"model": "catalogo.cancion", "pk": 17, "fields": {"album": 8, "titulo": "Pachamama", "duracion_seg": 295, "calidad": "FLAC", "reproducciones": 1320500}},
+
+  {
+    "model": "operacion.suscripcion", "pk": 1,
+    "fields": {"usuario": 1, "plan": "PREMIUM", "fecha_inicio": "2025-12-01", "fecha_fin": null, "precio_mensual": "9.99", "activa": true}
+  },
+  {
+    "model": "operacion.suscripcion", "pk": 2,
+    "fields": {"usuario": 2, "plan": "FAMILIAR", "fecha_inicio": "2025-11-15", "fecha_fin": null, "precio_mensual": "14.99", "activa": true}
+  },
+  {
+    "model": "operacion.suscripcion", "pk": 3,
+    "fields": {"usuario": 3, "plan": "FREE", "fecha_inicio": "2026-01-20", "fecha_fin": null, "precio_mensual": "0.00", "activa": true}
+  },
+
+  {
+    "model": "operacion.pago", "pk": 1,
+    "fields": {"usuario": 1, "suscripcion": 1, "monto": "9.99", "fecha": "2026-01-01T10:00:00Z", "metodo": "TARJETA", "aprobado": true, "referencia": "TXN-001"}
+  },
+  {
+    "model": "operacion.pago", "pk": 2,
+    "fields": {"usuario": 1, "suscripcion": 1, "monto": "9.99", "fecha": "2026-02-01T10:00:00Z", "metodo": "TARJETA", "aprobado": true, "referencia": "TXN-002"}
+  },
+  {
+    "model": "operacion.pago", "pk": 3,
+    "fields": {"usuario": 2, "suscripcion": 2, "monto": "14.99", "fecha": "2026-01-15T11:30:00Z", "metodo": "PAYPAL", "aprobado": true, "referencia": "PP-330011"}
+  },
+  {
+    "model": "operacion.pago", "pk": 4,
+    "fields": {"usuario": 2, "suscripcion": 2, "monto": "14.99", "fecha": "2026-02-15T11:30:00Z", "metodo": "PAYPAL", "aprobado": true, "referencia": "PP-330044"}
+  },
+
+  {"model": "operacion.reproduccion", "pk": 1, "fields": {"usuario": 1, "cancion": 3, "fecha": "2026-05-20T18:32:00Z", "segundos_reproducidos": 232}},
+  {"model": "operacion.reproduccion", "pk": 2, "fields": {"usuario": 1, "cancion": 9, "fecha": "2026-05-20T18:38:00Z", "segundos_reproducidos": 312}},
+  {"model": "operacion.reproduccion", "pk": 3, "fields": {"usuario": 2, "cancion": 16, "fecha": "2026-05-21T09:12:00Z", "segundos_reproducidos": 342}},
+  {"model": "operacion.reproduccion", "pk": 4, "fields": {"usuario": 2, "cancion": 1, "fecha": "2026-05-21T09:20:00Z", "segundos_reproducidos": 214}},
+  {"model": "operacion.reproduccion", "pk": 5, "fields": {"usuario": 3, "cancion": 6, "fecha": "2026-05-22T07:45:00Z", "segundos_reproducidos": 222}},
+  {"model": "operacion.reproduccion", "pk": 6, "fields": {"usuario": 3, "cancion": 12, "fecha": "2026-05-22T07:55:00Z", "segundos_reproducidos": 308}},
+
+  {
+    "model": "operacion.regalia", "pk": 1,
+    "fields": {"artista": 1, "periodo": "2026-04", "reproducciones_periodo": 1820000, "monto": "7280.00", "fecha_pago": "2026-05-10", "pagado": true}
+  },
+  {
+    "model": "operacion.regalia", "pk": 2,
+    "fields": {"artista": 3, "periodo": "2026-04", "reproducciones_periodo": 2400000, "monto": "9600.00", "fecha_pago": "2026-05-10", "pagado": true}
+  },
+  {
+    "model": "operacion.regalia", "pk": 3,
+    "fields": {"artista": 6, "periodo": "2026-04", "reproducciones_periodo": 1100000, "monto": "4400.00", "fecha_pago": null, "pagado": false}
+  },
+
+  {
+    "model": "usuarios.playlist", "pk": 1,
+    "fields": {"usuario": 1, "nombre": "Mis favoritas 2026", "descripcion": "Lo mejor que estoy descubriendo", "publica": true, "portada": ""}
+  },
+  {
+    "model": "usuarios.playlist", "pk": 2,
+    "fields": {"usuario": 2, "nombre": "Para correr", "descripcion": "Cardio + electronica", "publica": true, "portada": ""}
+  },
+  {
+    "model": "usuarios.playlist", "pk": 3,
+    "fields": {"usuario": 3, "nombre": "Estudiar tranquilo", "descripcion": "Jazz y folk suave", "publica": false, "portada": ""}
+  },
+
+  {"model": "usuarios.playlistcancion", "pk": 1, "fields": {"playlist": 1, "cancion": 1, "orden": 1}},
+  {"model": "usuarios.playlistcancion", "pk": 2, "fields": {"playlist": 1, "cancion": 3, "orden": 2}},
+  {"model": "usuarios.playlistcancion", "pk": 3, "fields": {"playlist": 1, "cancion": 9, "orden": 3}},
+  {"model": "usuarios.playlistcancion", "pk": 4, "fields": {"playlist": 2, "cancion": 9, "orden": 1}},
+  {"model": "usuarios.playlistcancion", "pk": 5, "fields": {"playlist": 2, "cancion": 10, "orden": 2}},
+  {"model": "usuarios.playlistcancion", "pk": 6, "fields": {"playlist": 2, "cancion": 16, "orden": 3}},
+  {"model": "usuarios.playlistcancion", "pk": 7, "fields": {"playlist": 3, "cancion": 12, "orden": 1}},
+  {"model": "usuarios.playlistcancion", "pk": 8, "fields": {"playlist": 3, "cancion": 14, "orden": 2}}
+]

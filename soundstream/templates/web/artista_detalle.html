@@ -1,0 +1,46 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{{ artista.nombre }} - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="orb one" data-parallax="0.3"></div>
+        <div class="grid cols-2" style="align-items: center; gap: 60px;">
+            <div class="card reveal-left" style="aspect-ratio: 1/1;">
+                <div class="cover" style="height: 100%; font-size: 4rem;">
+                    {% if artista.foto %}<img src="{{ artista.foto }}" alt="{{ artista.nombre }}">{% else %}🎤{% endif %}
+                </div>
+            </div>
+            <div class="reveal-right">
+                <span style="color: var(--accent); letter-spacing: 0.3em; font-size: 0.8rem;">ARTISTA VERIFICADO</span>
+                <h1 style="font-size: clamp(2rem, 5vw, 4rem); margin: 1rem 0;">{{ artista.nombre }}</h1>
+                <p style="color: var(--text-dim);">{{ artista.discografica.nombre|default:"Artista independiente" }}</p>
+                <p style="margin-top: 1.6rem; line-height: 1.8;">{{ artista.biografia|default:"" }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="block section-alt">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Discografia</span>
+            <h2>Albumes de {{ artista.nombre }}</h2>
+        </div>
+        <div class="grid cols-3" data-stagger>
+            {% for al in albumes %}
+            <a href="{% url 'catalogo:album_detalle' al.pk %}" class="card reveal">
+                <div class="cover">
+                    {% if al.portada %}<img src="{{ al.portada }}" alt="{{ al.titulo }}">{% else %}💿{% endif %}
+                </div>
+                <div class="body">
+                    <div class="title">{{ al.titulo }}</div>
+                    <div class="sub">{{ al.anio }} - {{ al.canciones.count }} canciones</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

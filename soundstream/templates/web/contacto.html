@@ -1,0 +1,50 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Contacto - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="orb two" data-parallax="0.5"></div>
+        <div class="section-title reveal">
+            <span class="eyebrow">Estamos para ayudarte</span>
+            <h2>Hablemos</h2>
+        </div>
+
+        <div class="grid cols-2" style="align-items: start;">
+            <div class="reveal-left">
+                <h3 style="margin-bottom: 1rem;">Contacto directo</h3>
+                <p style="color: var(--text-dim);">
+                    Email: <a href="mailto:{{ BRAND.email }}" style="color: var(--accent);">{{ BRAND.email }}</a><br>
+                    Web: {{ BRAND.web_actual }}
+                </p>
+                <p style="color: var(--text-dim); margin-top: 24px;">
+                    {{ BRAND.nombre }} es un proyecto academico Fase 7 que demuestra la integracion entre Django y MongoDB con animaciones de scroll premium.
+                </p>
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <a href="{{ BRAND.instagram }}" class="btn ghost">Instagram</a>
+                    <a href="{{ BRAND.twitter }}" class="btn ghost">Twitter</a>
+                    <a href="{{ BRAND.tiktok }}" class="btn ghost">TikTok</a>
+                </div>
+            </div>
+
+            <form method="post" class="form reveal-right">
+                {% csrf_token %}
+                <div class="field">
+                    <label>Nombre</label>
+                    <input name="nombre" required>
+                </div>
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="field">
+                    <label>Mensaje</label>
+                    <textarea name="mensaje" required></textarea>
+                </div>
+                <button type="submit" class="btn primary lg" style="width: 100%; justify-content: center;">Enviar mensaje</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

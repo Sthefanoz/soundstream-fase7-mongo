@@ -1,0 +1,35 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Panel de administracion - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Administracion</span>
+            <h2>Panel de gestion del catalogo</h2>
+            <p style="color: var(--text-dim); margin-top: 12px;">
+                Hola {{ usuario.primer_nombre }}, administra artistas, albumes y canciones.
+            </p>
+        </div>
+
+        <div class="grid cols-3" data-stagger>
+            <a href="{% url 'catalogo:gestion_artistas' %}" class="card reveal" style="padding: 30px;">
+                <div class="title">Artistas</div>
+                <div class="num" style="font-size: 2.4rem; color: var(--accent);">{{ n_artistas }}</div>
+                <div class="sub">Crear, editar y eliminar artistas</div>
+            </a>
+            <a href="{% url 'catalogo:gestion_albumes' %}" class="card reveal" style="padding: 30px;">
+                <div class="title">Albumes</div>
+                <div class="num" style="font-size: 2.4rem; color: var(--accent);">{{ n_albumes }}</div>
+                <div class="sub">Crear, editar y eliminar albumes</div>
+            </a>
+            <a href="{% url 'catalogo:gestion_canciones' %}" class="card reveal" style="padding: 30px;">
+                <div class="title">Canciones</div>
+                <div class="num" style="font-size: 2.4rem; color: var(--accent);">{{ n_canciones }}</div>
+                <div class="sub">Crear, editar y eliminar canciones</div>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

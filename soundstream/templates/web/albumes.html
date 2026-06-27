@@ -1,0 +1,74 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Albumes - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Discografias completas</span>
+            <h2>Todos los albumes</h2>
+        </div>
+
+        <form class="reveal" onsubmit="return false;" style="display:flex; gap:10px; max-width:560px; margin:0 auto 32px;">
+            <input type="text" id="buscador-albumes" autocomplete="off" placeholder="Buscar album o artista..."
+                   style="flex:1; padding:12px; border-radius:10px; background:#15151f; color:#fff; border:1px solid var(--border);">
+        </form>
+        <p id="contador-albumes" class="reveal" style="text-align:center; color:var(--text-dim); margin-bottom:24px; min-height:1.2em;"></p>
+
+        <div class="grid cols-4" data-stagger id="grid-albumes">
+            {% for al in albumes %}
+            <a href="{% url 'catalogo:album_detalle' al.pk %}" class="card reveal card-album">
+                <div class="cover">
+                    {% if al.portada %}<img src="{{ al.portada }}" alt="{{ al.titulo }}">{% else %}💿{% endif %}
+                    <div class="play-btn">▶</div>
+                </div>
+                <div class="body">
+                    <div class="title">{{ al.titulo }}</div>
+                    <div class="sub">{{ al.artista.nombre }} - {{ al.anio }} - {{ al.total_canciones }} tracks</div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="reveal" style="grid-column: 1 / -1; text-align: center; color: var(--text-dim);">
+                No hay albumes registrados.
+            </div>
+            {% endfor %}
+        </div>
+        <div id="sin-albumes" style="display:none; text-align:center; color:var(--text-dim); padding:40px;">
+            No se encontraron albumes.
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var input = document.getElementById('buscador-albumes');
+    if (!input) return;
+    var cards = Array.prototype.slice.call(document.querySelectorAll('#grid-albumes .card-album'));
+    var vacio = document.getElementById('sin-albumes');
+    var contador = document.getElementById('contador-albumes');
+
+    function norm(s) {
+        return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    }
+
+    function filtrar() {
+        var texto = input.value.trim();
+        var q = norm(texto);
+        var visibles = 0;
+        cards.forEach(function (card) {
+            var match = !q || norm(card.textContent).indexOf(q) !== -1;
+            card.style.display = match ? '' : 'none';
+            if (match) visibles++;
+        });
+        if (vacio) vacio.style.display = (cards.length && visibles === 0) ? 'block' : 'none';
+        if (contador) contador.textContent = texto ? visibles + ' album(es) encontrado(s).' : '';
+    }
+
+    input.addEventListener('input', filtrar);
+    filtrar();
+})();
+</script>
+{% endblock %}

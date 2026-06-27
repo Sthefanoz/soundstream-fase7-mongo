@@ -1,0 +1,44 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Catalogo - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Explora 50 millones de canciones</span>
+            <h2>Catalogo completo</h2>
+        </div>
+
+        <form method="get" class="reveal" style="max-width: 640px; margin: 0 auto 40px;">
+            <div class="field" style="display: flex; gap: 10px; margin: 0;">
+                <input type="text" name="q" value="{{ query }}" placeholder="Buscar cancion, album, artista...">
+                <button type="submit" class="btn primary">Buscar</button>
+            </div>
+        </form>
+
+        <div class="tracklist reveal" data-stagger>
+            {% csrf_token %}
+            {% for c in canciones %}
+            <div class="track reveal">
+                <div class="idx">{{ forloop.counter|stringformat:"02d" }}</div>
+                <div>
+                    <div class="t-title">{{ c.titulo }}</div>
+                    <div class="t-sub">{{ c.album.artista.nombre }} - {{ c.album.titulo }}</div>
+                </div>
+                <span class="quality {% if c.es_flac %}flac{% endif %}">{{ c.calidad_audio }}</span>
+                <span class="duration">{{ c.duracion_mmss }}</span>
+                <button class="play-mini" data-play-song="{% url 'catalogo:reproducir' c.pk %}" data-preview="{{ c.preview }}" data-titulo="{{ c.titulo }}" data-artista="{{ c.album.artista.nombre }}" aria-label="Reproducir">▶</button>
+            </div>
+            {% empty %}
+            <div class="track" style="padding: 40px; text-align: center; display: block;">
+                <div class="t-sub">
+                    {% if query %}No se encontraron resultados para "{{ query }}".
+                    {% else %}Carga los fixtures de prueba: <code>python manage.py loaddata sample_data</code>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

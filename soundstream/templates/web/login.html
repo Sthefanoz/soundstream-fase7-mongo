@@ -1,0 +1,30 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Iniciar sesion - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="orb one" data-parallax="0.4"></div>
+        <div class="section-title reveal">
+            <span class="eyebrow">Bienvenido de vuelta</span>
+            <h2>Inicia sesion</h2>
+        </div>
+        <form method="post" class="form reveal">
+            {% csrf_token %}
+            <div class="field">
+                <label>Correo electronico</label>
+                <input type="email" name="email" required autofocus placeholder="tu.correo@email.com">
+            </div>
+            <div class="field">
+                <label>Contrasena</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn primary lg" style="width: 100%; justify-content: center;">Entrar</button>
+            <p style="text-align: center; margin-top: 18px; color: var(--text-dim); font-size: 0.9rem;">
+                Aun no tienes cuenta? <a href="{% url 'usuarios:registro' %}" style="color: var(--accent);">Registrate</a>
+            </p>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{{ playlist.nombre }} - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">{% if playlist.es_publica %}Playlist publica{% else %}Playlist privada{% endif %}</span>
+            <h2>{{ playlist.nombre }}</h2>
+            <p style="color: var(--text-dim); margin-top: 12px;">{{ playlist.descripcion|default:"Sin descripcion" }}</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                <a href="{% url 'usuarios:editar_playlist' playlist.id_playlist %}" class="btn">Editar datos</a>
+                <a href="{% url 'usuarios:mis_playlists' %}" class="btn ghost">Volver</a>
+            </div>
+        </div>
+
+        {# ---------- Agregar cancion (CREATE en Cancion_Playlist) ---------- #}
+        <div class="reveal" style="max-width: 720px; margin: 0 auto 40px;">
+            <input type="text" id="buscar-agregar" autocomplete="off"
+                   placeholder="Buscar cancion para agregar..."
+                   style="width:100%; padding:12px; border-radius:10px; background:#15151f; color:#fff; border:1px solid var(--border);">
+            <form method="post" action="{% url 'usuarios:agregar_cancion' playlist.id_playlist %}" id="form-agregar">
+                {% csrf_token %}
+                <div id="lista-disponibles"
+                     style="margin-top:10px; max-height:320px; overflow-y:auto; border:1px solid var(--border); border-radius:10px;">
+                    {% for c in disponibles %}
+                    <button type="submit" name="cancion_id" value="{{ c.id_cancion }}"
+                            class="opcion-cancion"
+                            style="display:flex; justify-content:space-between; align-items:center; gap:12px; width:100%; text-align:left; background:transparent; color:#fff; border:none; border-bottom:1px solid rgba(255,255,255,0.06); padding:12px 14px; cursor:pointer; font-size:0.9rem;">
+                        <span>{{ c.titulo }} <span style="color:var(--text-dim);">- {{ c.album.artista.nombre }}</span></span>
+                        <span style="color:var(--accent); white-space:nowrap;">+ Agregar</span>
+                    </button>
+                    {% empty %}
+                    <div style="padding:16px; text-align:center; color:var(--text-dim);">No hay mas canciones para agregar.</div>
+                    {% endfor %}
+                    <div id="sin-disponibles" style="display:none; padding:16px; text-align:center; color:var(--text-dim);">Sin coincidencias.</div>
+                </div>
+            </form>
+        </div>
+
+        {# ---------- Canciones de la playlist (READ + DELETE) ---------- #}
+        <div class="tracklist reveal" data-stagger>
+            {% csrf_token %}
+            {% for c in canciones %}
+            <div class="track reveal">
+                <div class="idx">{{ forloop.counter|stringformat:"02d" }}</div>
+                <div>
+                    <div class="t-title">{{ c.titulo }}</div>
+                    <div class="t-sub">{{ c.album.artista.nombre }} - {{ c.album.titulo }}</div>
+                </div>
+                <span class="quality {% if c.es_flac %}flac{% endif %}">{{ c.calidad_audio }}</span>
+                <span class="duration">{{ c.duracion_mmss }}</span>
+                <form method="post" action="{% url 'usuarios:quitar_cancion' playlist.id_playlist c.id_cancion %}">
+                    {% csrf_token %}
+                    <button type="submit" class="play-mini" style="color:#ff6b6b;" aria-label="Quitar" title="Quitar de la playlist">✕</button>
+                </form>
+            </div>
+            {% empty %}
+            <div class="track" style="padding: 40px; text-align: center; display: block;">
+                <div class="t-sub">Esta playlist aun no tiene canciones. Agrega una arriba.</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    .opcion-cancion:hover { background: rgba(255,255,255,0.06) !important; }
+</style>
+<script>
+(function () {
+    var input = document.getElementById('buscar-agregar');
+    if (!input) return;
+    var opciones = Array.prototype.slice.call(document.querySelectorAll('#lista-disponibles .opcion-cancion'));
+    var vacio = document.getElementById('sin-disponibles');
+
+    function norm(s) {
+        return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    }
+
+    input.addEventListener('input', function () {
+        var q = norm(input.value.trim());
+        var visibles = 0;
+        opciones.forEach(function (op) {
+            var match = !q || norm(op.textContent).indexOf(q) !== -1;
+            op.style.display = match ? 'flex' : 'none';
+            if (match) visibles++;
+        });
+        if (vacio) vacio.style.display = (opciones.length && visibles === 0) ? 'block' : 'none';
+    });
+})();
+</script>
+{% endblock %}

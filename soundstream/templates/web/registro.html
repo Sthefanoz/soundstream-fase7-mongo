@@ -1,0 +1,31 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Crear cuenta - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="orb two" data-parallax="0.4"></div>
+        <div class="section-title reveal">
+            <span class="eyebrow">Comienza ahora</span>
+            <h2>Crear cuenta</h2>
+        </div>
+        <form method="post" class="form reveal">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="field">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <small style="color: #ff6b6b;">{{ field.errors|striptags }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn primary lg" style="width: 100%; justify-content: center;">Crear cuenta</button>
+            <p style="text-align: center; margin-top: 18px; color: var(--text-dim); font-size: 0.9rem;">
+                Ya tienes cuenta? <a href="{% url 'web:login' %}" style="color: var(--accent);">Iniciar sesion</a>
+            </p>
+        </form>
+    </div>
+</section>
+{% endblock %}

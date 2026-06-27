@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ BRAND.nombre }} - {{ BRAND.tagline }}{% endblock %}</title>
+    <meta name="description" content="{{ BRAND.tagline }} - 50M canciones, 50k artistas, 100k podcasts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<nav class="nav{% if usuario.es_admin %} nav-admin{% endif %}">
+    <div class="container">
+        <a href="{% url 'web:inicio' %}" class="brand">
+            <span class="dot"></span> {{ BRAND.nombre }}
+        </a>
+        <ul class="nav-links">
+            <li><a href="{% url 'web:inicio' %}" {% if request.resolver_match.url_name == 'inicio' %}class="active"{% endif %}>Inicio</a></li>
+            <li><a href="{% url 'web:catalogo' %}" {% if request.resolver_match.url_name == 'catalogo' %}class="active"{% endif %}>Catalogo</a></li>
+            <li><a href="{% url 'web:artistas' %}" {% if request.resolver_match.url_name == 'artistas' %}class="active"{% endif %}>Artistas</a></li>
+            <li><a href="{% url 'web:albumes' %}" {% if request.resolver_match.url_name == 'albumes' %}class="active"{% endif %}>Albumes</a></li>
+            <li><a href="{% url 'usuarios:publicas' %}">Playlists</a></li>
+            <li><a href="{% url 'web:suscripciones' %}" {% if request.resolver_match.url_name == 'suscripciones' %}class="active"{% endif %}>Planes</a></li>
+            <li><a href="{% url 'web:contacto' %}" {% if request.resolver_match.url_name == 'contacto' %}class="active"{% endif %}>Contacto</a></li>
+        </ul>
+        <div class="nav-cta">
+            {% if usuario %}
+                {% if usuario.es_admin %}
+                <a href="{% url 'catalogo:gestion_panel' %}" class="btn ghost" style="border-color: var(--accent); color: var(--accent);">Panel admin</a>
+                <a href="{% url 'reportes:panel' %}" class="btn ghost" style="border-color: var(--accent); color: var(--accent);">Reportes</a>
+                {% endif %}
+                <a href="{% url 'usuarios:mis_playlists' %}" class="btn ghost">Mis playlists</a>
+                <a href="{% url 'operacion:historial' %}" class="btn ghost">Historial</a>
+                <a href="{% url 'web:logout' %}" class="btn primary">Salir</a>
+            {% else %}
+                <a href="{% url 'web:login' %}" class="btn ghost">Entrar</a>
+                <a href="{% url 'usuarios:registro' %}" class="btn primary">Registro</a>
+            {% endif %}
+            <button class="burger" aria-label="Menu">&#9776;</button>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="msg-list">
+    {% for m in messages %}
+    <div class="msg {% if m.tags == 'error' %}error{% endif %}">{{ m }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer>
+    <div class="container">
+        <div>
+            <div class="brand" style="margin-bottom: 12px;"><span class="dot"></span> {{ BRAND.nombre }}</div>
+            <p>{{ BRAND.tagline }}</p>
+            <p style="margin-top: 16px;">{{ BRAND.email }}</p>
+        </div>
+        <div>
+            <h4>Producto</h4>
+            <ul>
+                <li><a href="{% url 'web:catalogo' %}">Catalogo</a></li>
+                <li><a href="{% url 'web:artistas' %}">Artistas</a></li>
+                <li><a href="{% url 'web:albumes' %}">Albumes</a></li>
+                <li><a href="{% url 'web:suscripciones' %}">Planes</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Comunidad</h4>
+            <ul>
+                <li><a href="{{ BRAND.instagram }}">Instagram</a></li>
+                <li><a href="{{ BRAND.twitter }}">X / Twitter</a></li>
+                <li><a href="{{ BRAND.tiktok }}">TikTok</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Empresa</h4>
+            <ul>
+                <li><a href="{% url 'web:contacto' %}">Contacto</a></li>
+                <li><a href="#">Privacidad</a></li>
+                <li><a href="#">Terminos</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">&copy; 2026 {{ BRAND.nombre }} - Proyecto Integrador Fase 7</div>
+</footer>
+
+<div id="confirm-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#15151f; border:1px solid var(--border); border-radius:16px; max-width:430px; width:100%; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.55);">
+        <h3 style="margin:0 0 12px; font-size:1.15rem;">Confirmar accion</h3>
+        <p id="confirm-text" style="color:var(--text-dim); margin:0 0 24px; line-height:1.5;"></p>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+            <button type="button" id="confirm-cancel" class="btn">Cancelar</button>
+            <button type="button" id="confirm-ok" class="btn" style="color:#ff6b6b; border-color:#ff6b6b;">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Reproductor persistente (mini-player) -->
+<div id="player-bar" class="player-bar">
+    <div class="player-inner">
+        <div class="player-info">
+            <div class="player-eq" id="player-eq"><span></span><span></span><span></span><span></span></div>
+            <div class="player-meta">
+                <div class="player-title" id="player-title">Sin reproducir</div>
+                <div class="player-artist" id="player-artist"></div>
+            </div>
+        </div>
+        <button id="player-toggle" class="player-btn play" aria-label="Reproducir o pausar">&#9208;</button>
+        <div class="player-progress">
+            <span class="player-time" id="player-cur">0:00</span>
+            <div class="player-track" id="player-track"><div class="player-fill" id="player-fill"></div></div>
+            <span class="player-time" id="player-dur">0:30</span>
+        </div>
+        <button id="player-close" class="player-btn close" aria-label="Cerrar reproductor">&times;</button>
+    </div>
+    <audio id="reproductor-audio" preload="auto"></audio>
+</div>
+
+<script src="{% static 'js/scroll.js' %}" defer></script>
+<script>
+(function () {
+    var modal = document.getElementById('confirm-modal');
+    if (!modal) return;
+    var txt = document.getElementById('confirm-text');
+    var okBtn = document.getElementById('confirm-ok');
+    var cancelBtn = document.getElementById('confirm-cancel');
+    var pending = null;
+
+    document.querySelectorAll('form[data-confirm]').forEach(function (f) {
+        f.addEventListener('submit', function (e) {
+            if (f.dataset.confirmed === '1') return;
+            e.preventDefault();
+            pending = f;
+            txt.textContent = f.getAttribute('data-confirm') || '¿Estas seguro?';
+            modal.style.display = 'flex';
+        });
+    });
+
+    function cerrar() { modal.style.display = 'none'; pending = null; }
+    cancelBtn.addEventListener('click', cerrar);
+    modal.addEventListener('click', function (e) { if (e.target === modal) cerrar(); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.style.display !== 'none') cerrar();
+    });
+    okBtn.addEventListener('click', function () {
+        if (pending) { pending.dataset.confirmed = '1'; pending.submit(); }
+    });
+})();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends 'web/base.html' %}
+
+{% block title %}{{ titulo }} - {{ BRAND.nombre }}{% endblock %}
+
+{% block content %}
+<section class="block" style="padding-top: 140px;">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Reporte</span>
+            <h2>{{ titulo }}</h2>
+            {% if subtitulo %}
+            <p style="color: var(--text-dim); margin-top: 12px;">{{ subtitulo }}</p>
+            {% endif %}
+        </div>
+
+        <div class="reveal" style="margin-bottom: 20px;">
+            <a href="{% url 'reportes:panel' %}" class="btn ghost">&larr; Volver a reportes</a>
+        </div>
+
+        <div class="reveal" style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:0.92rem;">
+                <thead>
+                    <tr style="text-align:left; color:var(--text-dim); border-bottom:1px solid var(--border);">
+                        {% for col in columnas %}
+                        <th style="padding:12px 10px;">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in filas %}
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                        {% for celda in fila %}
+                        <td style="padding:12px 10px;">{{ celda }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="99" style="padding:30px; text-align:center; color:var(--text-dim);">
+                        Sin datos para este reporte.
+                    </td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

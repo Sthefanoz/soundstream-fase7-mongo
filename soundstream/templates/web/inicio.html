@@ -1,0 +1,170 @@
+{% extends 'web/base.html' %}
+{% load static %}
+
+{% block title %}{{ BRAND.nombre }} - {{ BRAND.tagline }}{% endblock %}
+
+{% block content %}
+
+{# ============== HERO (con vídeo opcional) ============== #}
+{% if False %}
+<section class="scroll-video-hero" id="scroll-hero">
+    <div class="scroll-video-sticky">
+        <video id="heroVideo" src="{% static 'assets/hero.mp4' %}" playsinline muted preload="auto"></video>
+        <div class="scroll-video-overlay">
+            <h1>El sonido sin limites</h1>
+            <p class="lead">FLAC lossless, 320 kbps y un catalogo de 50 millones de canciones.</p>
+            <div class="hero-actions">
+                <a href="{% url 'web:suscripciones' %}" class="btn primary lg">Probar Premium gratis</a>
+                <a href="{% url 'web:catalogo' %}" class="btn ghost lg">Explorar catalogo</a>
+            </div>
+        </div>
+        <div class="scroll-progress-bar"><div class="scroll-progress-fill" id="progressFill"></div></div>
+    </div>
+</section>
+{% else %}
+<section class="hero">
+    <div class="orb one" data-parallax="0.4"></div>
+    <div class="orb two" data-parallax="0.6"></div>
+    <div class="orb three" data-parallax="0.3"></div>
+    <div class="container">
+        <span class="reveal" style="display:inline-block; color: var(--accent); letter-spacing: 0.3em; font-size: 0.85rem;">SOUNDSTREAM</span>
+        <h1 class="reveal" style="margin-top: 1rem;">El sonido<br>sin limites.</h1>
+        <p class="lead reveal">{{ BRAND.tagline }} FLAC lossless, 320 kbps y un catalogo infinito. Donde la musica suena como deberia.</p>
+        <div class="hero-actions reveal">
+            <a href="{% url 'web:suscripciones' %}" class="btn primary lg">Probar Premium gratis</a>
+            <a href="{% url 'web:catalogo' %}" class="btn ghost lg">Explorar catalogo &rarr;</a>
+        </div>
+        <div class="equalizer reveal">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ============== ESTADISTICAS ============== #}
+<section class="block">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Catalogo en numeros</span>
+            <h2>Una biblioteca que no se acaba</h2>
+        </div>
+        <div class="stats" data-stagger>
+            <div class="stat reveal-scale">
+                <div class="num" data-count="50" data-suffix="M">0</div>
+                <div class="lbl">Canciones disponibles</div>
+            </div>
+            <div class="stat reveal-scale">
+                <div class="num" data-count="50" data-suffix="k">0</div>
+                <div class="lbl">Artistas verificados</div>
+            </div>
+            <div class="stat reveal-scale">
+                <div class="num" data-count="100" data-suffix="k">0</div>
+                <div class="lbl">Podcasts y shows</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ============== TOP CANCIONES ============== #}
+<section class="block section-alt">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Lo mas reproducido</span>
+            <h2>Top de la semana</h2>
+        </div>
+        <div class="tracklist reveal" data-stagger>
+            {% csrf_token %}
+            {% for c in top_canciones %}
+            <div class="track reveal">
+                <div class="idx">{{ forloop.counter|stringformat:"02d" }}</div>
+                <div>
+                    <div class="t-title">{{ c.titulo }}</div>
+                    <div class="t-sub">{{ c.album.artista.nombre }} - {{ c.album.titulo }}</div>
+                </div>
+                <span class="quality {% if c.es_flac %}flac{% endif %}">{{ c.calidad_audio }}</span>
+                <span class="duration">{{ c.duracion_mmss }}</span>
+                <button class="play-mini" data-play-song="{% url 'catalogo:reproducir' c.pk %}" data-preview="{{ c.preview }}" data-titulo="{{ c.titulo }}" data-artista="{{ c.album.artista.nombre }}" aria-label="Reproducir">▶</button>
+            </div>
+            {% empty %}
+            <div class="track"><div class="t-sub">Carga los fixtures para ver datos.</div></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ============== PARALLAX BAND ============== #}
+<section class="parallax-band">
+    <div class="bg-text">SOUNDSTREAM</div>
+    <div class="container">
+        <div class="content reveal">
+            <h2>Calidad de estudio,<br>en tu bolsillo</h2>
+            <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.1rem;">
+                Reproduccion lossless FLAC, audio espacial y 320 kbps en cualquier dispositivo.
+                Asi suena la musica como la grabo el artista.
+            </p>
+            <a href="{% url 'web:suscripciones' %}" class="btn primary lg" style="margin-top: 2rem;">Ver planes Premium</a>
+        </div>
+    </div>
+</section>
+
+{# ============== ARTISTAS DESTACADOS ============== #}
+<section class="block">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Artistas del momento</span>
+            <h2>Los mas escuchados</h2>
+        </div>
+        <div class="grid cols-3" data-stagger>
+            {% for a in top_artistas %}
+            <a href="{% url 'catalogo:artista_detalle' a.pk %}" class="card reveal">
+                <div class="cover">
+                    {% if a.foto %}<img src="{{ a.foto }}" alt="{{ a.nombre }}" loading="lazy">{% else %}🎤{% endif %}
+                </div>
+                <div class="body">
+                    <div class="title">{{ a.nombre }}</div>
+                    <div class="sub">{{ a.plays|default:0 }} reproducciones</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ============== NUEVOS ALBUMES ============== #}
+<section class="block section-alt">
+    <div class="container">
+        <div class="section-title reveal">
+            <span class="eyebrow">Recien llegados</span>
+            <h2>Nuevos lanzamientos</h2>
+        </div>
+        <div class="grid cols-4" data-stagger>
+            {% for al in nuevos_albumes %}
+            <a href="{% url 'catalogo:album_detalle' al.pk %}" class="card reveal">
+                <div class="cover">
+                    {% if al.portada %}<img src="{{ al.portada }}" alt="{{ al.titulo }}">{% else %}💿{% endif %}
+                    <div class="play-btn">▶</div>
+                </div>
+                <div class="body">
+                    <div class="title">{{ al.titulo }}</div>
+                    <div class="sub">{{ al.artista.nombre }} - {{ al.anio }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ============== CTA FINAL ============== #}
+<section class="block">
+    <div class="container">
+        <div class="reveal" style="background: linear-gradient(135deg, rgba(30,215,96,0.18), rgba(120,75,160,0.18)); border-radius: 24px; padding: 80px 40px; text-align: center; border: 1px solid var(--border);">
+            <h2>Empieza a escuchar gratis</h2>
+            <p style="color: var(--text-dim); max-width: 540px; margin: 1rem auto 2rem;">
+                Sin tarjeta. Sin compromiso. 30 dias de Premium incluidos al registrarte.
+            </p>
+            <a href="{% url 'usuarios:registro' %}" class="btn primary lg">Crear cuenta</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
