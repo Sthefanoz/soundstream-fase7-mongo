@@ -81,7 +81,12 @@ class Playlist(models.Model):
         return (self.tipo_visibilidad or '').lower() == 'publica'
 
     @property
+    def num_canciones(self):
+        """Cantidad de canciones SIN consultar la BD (usa el arreglo embebido)."""
+        return len(self.canciones_ids or [])
+
+    @property
     def canciones(self):
         """Canciones de la playlist a partir del arreglo de ids embebido."""
         ids = self.canciones_ids or []
-        return Cancion.objects.filter(id_cancion__in=ids)
+        return Cancion.objects.filter(id_cancion__in=ids).select_related('album__artista')

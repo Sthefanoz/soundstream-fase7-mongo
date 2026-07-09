@@ -46,8 +46,9 @@ def inicio(request):
     for a in top_artistas:
         a.plays = plays_por_artista.get(a.pk, 0)
 
-    nuevos_albumes = Album.objects.order_by('-fecha_lanzamiento')[:8]
-    top_canciones = Cancion.objects.order_by('-num_reproducciones')[:10]
+    nuevos_albumes = Album.objects.select_related('artista').order_by('-fecha_lanzamiento')[:8]
+    top_canciones = (Cancion.objects.select_related('album__artista')
+                     .order_by('-num_reproducciones')[:10])
     return render(request, 'web/inicio.html', {
         'top_artistas': top_artistas,
         'nuevos_albumes': nuevos_albumes,
@@ -57,7 +58,7 @@ def inicio(request):
 
 def catalogo(request):
     query = request.GET.get('q', '').strip()
-    qs = Cancion.objects.all()
+    qs = Cancion.objects.select_related('album__artista')
     if query:
         qs = qs.filter(titulo__icontains=query)
     canciones = qs.order_by('-num_reproducciones')[:60]
@@ -76,7 +77,7 @@ def artistas(request):
 
 
 def albumes(request):
-    albumes_qs = list(Album.objects.order_by('-fecha_lanzamiento'))
+    albumes_qs = list(Album.objects.select_related('artista').order_by('-fecha_lanzamiento'))
     conteo = _conteo_por(Cancion, 'album')
     for al in albumes_qs:
         al.total_canciones = conteo.get(al.pk, 0)

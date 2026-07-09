@@ -9,7 +9,7 @@ siguiente id con apps.common.ids.siguiente_id.
 """
 
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -27,7 +27,7 @@ from .models import Artista, Album, Cancion, Discografica
 # ----------------------------------------------------------------------------
 def detalle_artista(request, pk):
     artista = get_object_or_404(Artista, pk=pk)
-    albumes = artista.albumes.all()
+    albumes = artista.albumes.prefetch_related('canciones')
     return render(request, 'web/artista_detalle.html', {
         'artista': artista,
         'albumes': albumes,
@@ -118,10 +118,13 @@ def gestion_artistas(request):
     artistas = Artista.objects.all()
     if q:
         artistas = artistas.filter(nombre__icontains=q)
+    # Conteo de albumes por artista en UNA sola consulta (evita N+1).
+    conteo = {r['artista']: r['n']
+              for r in Album.objects.values('artista').annotate(n=Count('pk'))}
     filas = [{
         'pk': a.id_artista,
         'campos': [a.nombre, a.discografica.nombre if a.discografica else '-',
-                   a.albumes.count()],
+                   conteo.get(a.pk, 0)],
     } for a in artistas]
     return render(request, 'web/gestion_lista.html', {
         'titulo': 'Artistas', 'singular': 'artista', 'q': q,
@@ -168,12 +171,15 @@ def artista_eliminar(request, pk):
 @admin_required
 def gestion_albumes(request):
     q = request.GET.get('q', '').strip()
-    albumes = Album.objects.all()
+    albumes = Album.objects.select_related('artista')
     if q:
         albumes = albumes.filter(titulo__icontains=q)
+    # Conteo de canciones por album en UNA sola consulta (evita N+1).
+    conteo = {r['album']: r['n']
+              for r in Cancion.objects.values('album').annotate(n=Count('pk'))}
     filas = [{
         'pk': al.id_album,
-        'campos': [al.titulo, al.artista.nombre, al.anio, al.canciones.count()],
+        'campos': [al.titulo, al.artista.nombre, al.anio, conteo.get(al.pk, 0)],
     } for al in albumes]
     return render(request, 'web/gestion_lista.html', {
         'titulo': 'Albumes', 'singular': 'album', 'q': q,
@@ -217,7 +223,7 @@ def album_eliminar(request, pk):
 @admin_required
 def gestion_canciones(request):
     q = request.GET.get('q', '').strip()
-    canciones = Cancion.objects.all()
+    canciones = Cancion.objects.select_related('album', 'artista')
     if q:
         canciones = canciones.filter(titulo__icontains=q)
     canciones = canciones[:200]

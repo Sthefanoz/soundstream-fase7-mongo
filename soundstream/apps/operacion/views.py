@@ -14,13 +14,15 @@ from .models import Reproduccion, Pago, Regalia, Suscripcion
 @usuario_required
 def historial_usuario(request):
     usuario = get_usuario(request)
-    reproducciones = Reproduccion.objects.filter(usuario=usuario)[:50]
+    reproducciones = (Reproduccion.objects.filter(usuario=usuario)
+                      .select_related('cancion__album__artista')[:50])
     suscripcion = (Suscripcion.objects
                    .filter(usuario=usuario)
                    .order_by('-fecha_inicio')
                    .first())
     # En Mongo el pago referencia directamente al usuario (usuarioId).
-    pagos = Pago.objects.filter(usuario=usuario, resultado='Aprobado')
+    pagos = (Pago.objects.filter(usuario=usuario, resultado='Aprobado')
+             .select_related('suscripcion'))
     return render(request, 'web/historial.html', {
         'reproducciones': reproducciones,
         'pagos': pagos,

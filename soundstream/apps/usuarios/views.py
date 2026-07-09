@@ -32,9 +32,24 @@ def registro(request):
     return render(request, 'web/registro.html', {'form': form})
 
 
+def _adjuntar_previews(playlists):
+    """Carga las primeras 3 canciones de cada playlist en UNA sola consulta
+    (evita N+1 al pintar las tarjetas)."""
+    playlists = list(playlists)
+    ids = set()
+    for p in playlists:
+        ids.update((p.canciones_ids or [])[:3])
+    canciones = {c.pk: c for c in Cancion.objects.filter(id_cancion__in=ids)
+                 .select_related('album__artista')}
+    for p in playlists:
+        p.preview_canciones = [canciones[i] for i in (p.canciones_ids or [])[:3]
+                               if i in canciones]
+    return playlists
+
+
 @usuario_required
 def mis_playlists(request):
-    playlists = Playlist.objects.filter(usuario=get_usuario(request))
+    playlists = _adjuntar_previews(Playlist.objects.filter(usuario=get_usuario(request)))
     return render(request, 'web/playlists.html', {
         'playlists': playlists,
         'es_propio': True,
@@ -42,7 +57,8 @@ def mis_playlists(request):
 
 
 def playlists_publicas(request):
-    playlists = Playlist.objects.filter(tipo_visibilidad='publica')[:30]
+    playlists = _adjuntar_previews(
+        Playlist.objects.filter(tipo_visibilidad='publica').select_related('usuario')[:30])
     return render(request, 'web/playlists.html', {
         'playlists': playlists,
         'es_propio': False,
@@ -97,9 +113,11 @@ def eliminar_playlist(request, playlist_id):
 def detalle_playlist(request, playlist_id):
     playlist = get_object_or_404(Playlist, pk=playlist_id, usuario=get_usuario(request))
     ids_actuales = playlist.canciones_ids or []
-    canciones = Cancion.objects.filter(id_cancion__in=ids_actuales)
+    canciones = (Cancion.objects.filter(id_cancion__in=ids_actuales)
+                 .select_related('album__artista'))
     disponibles = (Cancion.objects
                    .exclude(id_cancion__in=ids_actuales)
+                   .select_related('album__artista')
                    .order_by('titulo'))
     return render(request, 'web/playlist_detalle.html', {
         'playlist': playlist,

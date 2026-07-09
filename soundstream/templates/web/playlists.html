@@ -29,18 +29,16 @@
                     <div class="title">{{ p.nombre }}</div>
                     <div class="sub">
                         {{ p.descripcion|default:"Sin descripcion" }}<br>
-                        {{ p.canciones.count }} canciones - {{ p.usuario.primer_nombre }}
+                        {{ p.num_canciones }} canciones - {{ p.usuario.primer_nombre }}
                         {% if not p.es_publica %}<span class="quality" style="margin-left:6px;">privada</span>{% endif %}
                     </div>
-                    {% with primeras=p.canciones.all|slice:":3" %}
-                    {% if primeras %}
+                    {% if p.preview_canciones %}
                     <ul style="margin-top: 12px; list-style: none; font-size: 0.85rem; color: var(--text-dim);">
-                        {% for c in primeras %}
+                        {% for c in p.preview_canciones %}
                         <li>♪ {{ c.titulo }} - {{ c.album.artista.nombre }}</li>
                         {% endfor %}
                     </ul>
                     {% endif %}
-                    {% endwith %}
                     {% if es_propio %}
                     <div style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
                         <a href="{% url 'usuarios:detalle_playlist' p.id_playlist %}" class="btn primary" style="flex: 1; justify-content: center; padding: 8px 12px; font-size: 0.85rem;">Abrir</a>
